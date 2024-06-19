@@ -6,26 +6,28 @@ import { myDataSource } from '../app-data-source'
 const router = Router()
 
 router.post('/create-request', async (req, res) => {
-  const { productId, userId } = req.body
+  const { productsIds, userId } = req.body
+
+  console.log('req.body', req.body)
 
   const userRepository = myDataSource.getRepository(User)
 
   try {
     const user = await userRepository.findOne({ where: { id: Number(userId) } })
 
-    if (!user || !productId) {
-      return res.status(400).json({ error: 'User or product not found' })
+    if (!user || !productsIds || !Array.isArray(productsIds)) {
+      return res.status(400).json({ error: 'User not found or invalid productId' })
     }
 
     if (user.productsId) {
-      user.productsId.push(productId)
+      user.productsId.push(...productsIds)
     } else {
-      user.productsId = [productId]
+      user.productsId = [...productsIds]
     }
 
     await userRepository.save(user)
 
-    res.json({ message: 'Product added successfully', user })
+    res.json({ message: 'Products added successfully', user })
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: 'Internal server error' })
