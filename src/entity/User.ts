@@ -1,5 +1,10 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
 
+type Request = {
+  productId: number
+  status: string
+}
+
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
@@ -24,5 +29,5 @@ export class User {
   is_admin: boolean
 
   @Column({ type: 'text', array: true, nullable: true })
-  productsId: number[]
+  requests: Request[]
 }

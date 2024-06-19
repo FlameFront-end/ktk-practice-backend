@@ -6,7 +6,7 @@ import { myDataSource } from '../app-data-source'
 const router = Router()
 
 router.post('/create-request', async (req, res) => {
-  const { productsIds, userId } = req.body
+  const { requests, userId } = req.body
 
   console.log('req.body', req.body)
 
@@ -15,14 +15,14 @@ router.post('/create-request', async (req, res) => {
   try {
     const user = await userRepository.findOne({ where: { id: Number(userId) } })
 
-    if (!user || !productsIds || !Array.isArray(productsIds)) {
+    if (!user || !requests || !Array.isArray(requests)) {
       return res.status(400).json({ error: 'User not found or invalid productId' })
     }
 
-    if (user.productsId) {
-      user.productsId.push(...productsIds)
+    if (user.requests) {
+      user.requests.push(...requests)
     } else {
-      user.productsId = [...productsIds]
+      user.requests = [...requests]
     }
 
     await userRepository.save(user)
