@@ -1,9 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
-
-type Request = {
-  productId: number
-  status: string
-}
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm'
+import { Request } from './Request'
 
 @Entity()
 export class User {
@@ -28,6 +24,6 @@ export class User {
   @Column({ default: false })
   is_admin: boolean
 
-  @Column({ type: 'text', array: true, nullable: true })
+  @OneToMany(() => Request, (request) => request.user)
   requests: Request[]
 }

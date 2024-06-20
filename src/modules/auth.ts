@@ -93,13 +93,30 @@ router.get('/me', verifyToken, async (req: any, res) => {
   const userRepository = myDataSource.getRepository(User)
 
   try {
-    const user = await userRepository.findOne({ where: { id: Number(userId) } })
+    const user = await userRepository.findOne({
+      where: { id: Number(userId) },
+      relations: ['requests'],
+    })
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' })
     }
 
-    res.json({ user })
+    const responseUser = {
+      id: user.id,
+      fullName: user.fullName,
+      username: user.username,
+      phone: user.phone,
+      login: user.login,
+      is_admin: user.is_admin,
+      requests: user.requests.map((req) => ({
+        id: req.id,
+        productId: req.productId,
+        status: req.status,
+      })),
+    }
+
+    res.json({ user: responseUser })
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: 'Internal server error' })
