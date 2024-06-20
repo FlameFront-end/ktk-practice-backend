@@ -79,7 +79,7 @@ router.get('/all-requests', async (_, res) => {
   const requestRepository = myDataSource.getRepository(Request)
 
   try {
-    const requests = await requestRepository.find({ relations: ['user'] })
+    const requests = await requestRepository.find({ relations: ['user'], order: { id: 'ASC' } })
 
     const responseRequests = requests.map((req) => ({
       id: req.id,
